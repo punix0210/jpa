@@ -19,7 +19,7 @@ import com.erp.service.PedidoDeVendaService;
 @RequestMapping(value = "api/pedidos")
 public class PedidoDeVendaResource {
 
-	PedidoDeVendaService service;
+	private final PedidoDeVendaService service;
 
 	public PedidoDeVendaResource(PedidoDeVendaService service) {
 		this.service = service;
@@ -45,4 +45,5 @@ public class PedidoDeVendaResource {
 		return new ResponseEntity<>(this.service.search(filter), HttpStatus.OK);
 	}	
 
+	
 }

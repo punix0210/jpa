@@ -1,6 +1,7 @@
 package com.erp.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +17,19 @@ import com.erp.service.regras.CalculoImpostos;
 @Service
 public class PedidoDeVendaService {
 
-	private PedidoDeVendaRepository repository;
+	private final PedidoDeVendaRepository repository;
 
-	@Autowired
-	@Qualifier("icms")
-	private CalculoImpostos icms;
+	private final Map<String, CalculoImpostos> impostos;
+//	@Autowired
+//	@Qualifier("icms")
+//	private CalculoImpostos icms;
+//
+//	@Autowired
+//	@Qualifier("iss")
+//	private CalculoImpostos iss;
 
-	@Autowired
-	@Qualifier("iss")
-	private CalculoImpostos iss;
-
-	public PedidoDeVendaService(PedidoDeVendaRepository repository) {
+	public PedidoDeVendaService(Map<String, CalculoImpostos> impostos, PedidoDeVendaRepository repository) {
+		this.impostos = impostos;
 		this.repository = repository;
 	}
 
@@ -38,15 +41,16 @@ public class PedidoDeVendaService {
 	public PedidoDeVendaDto findByIdPedido(String id) {
 		PedidoDeVenda p = this.repository.findByIdPedido(id);
 		p.getItems().stream().forEach(item -> {
-			item.setVlIcms(icms.calcular(item, p.getEmpresa().getCdUf()));
-			item.setVlISS(iss.calcular(item, p.getEmpresa().getCdUf()));
+			item.setVlIcms(impostos.get(item.getTipo()).calcular(item, p.getEmpresa().getCdUf()));
+//			item.setVlIcms(icms.calcular(item, p.getEmpresa().getCdUf()));
+//			item.setVlISS(iss.calcular(item, p.getEmpresa().getCdUf()));
 		});
 		return p.convertDTO();
 	}
-	
+
 	public List<PedidoDeVendaDto> search(PedidoDeVendaFilter filter) {
 		List<PedidoDeVenda> pedidos = this.repository.search(filter);
-		return pedidos.stream().map(p -> p.convertTableDto()).collect(Collectors.toList());		
+		return pedidos.stream().map(p -> p.convertTableDto()).collect(Collectors.toList());
 	}
 
 }

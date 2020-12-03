@@ -65,7 +65,7 @@ public class PedidoDeVendaRepositoryImpl implements PedidoDeVendaRepositoryCusto
 		}
 
 		if (filter.getCliente() != null && !filter.getCliente().equals("")) {
-			sql += condicao + " p.cliente.cdChamada like :cliente ";
+			sql += condicao + " p.cliente.nmPessoa like :cliente ";
 			condicao = " and ";
 		}
 
@@ -87,7 +87,7 @@ public class PedidoDeVendaRepositoryImpl implements PedidoDeVendaRepositoryCusto
 		}
 
 		if (filter.getCliente() != null && !filter.getCliente().equals("")) {
-			query.setParameter("cliente", filter.getCliente());
+			query.setParameter("cliente", "%"+filter.getCliente()+"%" );
 		}
 
 		if (filter.getDataInicio() != null && !filter.getDataInicio().equals("")) {
